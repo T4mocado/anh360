@@ -1,13 +1,46 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <title>Chỉ nhìn xung quanh - VR 360</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    
+    <script>
+      AFRAME.registerComponent('limit-look-controls', {
+        init: function () {
+          // Lấy thành phần look-controls của camera
+          this.lookControls = this.el.components['look-controls'];
+        },
+        tick: function () {
+          // Mỗi khung hình, ép góc nhìn x (lên/xuống) về 0
+          // Người dùng chỉ có thể xoay sang trái/phải (góc y)
+          if (this.lookControls) {
+            this.lookControls.pitchObject.rotation.x = 0;
+          }
+        }
+      });
+    </script>
   </head>
   <body>
-    <a-scene>
-      <a-sky src="anh360.jpg" rotation="0 -130 0"></a-sky>
+    <a-scene embedded style="width: 100%; height: 100vh;" background="color: #000000">
       
-      <a-entity camera look-controls></a-entity>
+      <a-assets>
+        <img id="panorama" src="your-pano-image.jpg">
+      </a-assets>
+
+      <a-cylinder 
+        src="#panorama" 
+        radius="10" 
+        height="8" 
+        open-ended="true" 
+        side="double" 
+        position="0 1.6 0" 
+        rotation="0 -90 0">
+      </a-cylinder>
+
+      <a-entity camera look-controls="pointerLockEnabled: true" position="0 1.6 0" limit-look-controls>
+      </a-entity>
+      
     </a-scene>
   </body>
 </html>
